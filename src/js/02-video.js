@@ -13,3 +13,22 @@ player.on('timeupdate', throttle(onPlay, 1000));
 const currentTime = Number(localStorage.getItem('videoplayer-current-time'));
 
 player.setCurrentTime(currentTime);
+
+function checkSavedTime() {
+  player.getDuration().then(function (duration) {
+    if (currentTime === null || currentTime > duration) {
+      player.setCurrentTime(0);
+    }
+  });
+}
+player.on('loaded', function () {
+  checkSavedTime();
+});
+
+player.on('play', function () {
+  checkSavedTime();
+});
+
+player.on('ended', function () {
+  player.setCurrentTime(0);
+});
